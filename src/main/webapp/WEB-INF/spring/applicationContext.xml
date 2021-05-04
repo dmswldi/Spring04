@@ -41,4 +41,7 @@
 
     <!-- interface : bean 등록 -->
     <context:component-scan base-package="org.zerock.sample"/>
+
+    <!-- @Service : 스프링의 빈으로 등록 -->
+    <context:component-scan base-package="org.zerock.service"/>
 </beans>
