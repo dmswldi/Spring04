@@ -20,6 +20,7 @@
         <property name="password" value="book_ex" />
     </bean>
 
+    <!-- DBCP, 빈 사라질 때 close() -->
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 <!--
         <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
@@ -30,11 +31,14 @@
         <constructor-arg ref="hikariConfig" />
     </bean>
 
+    <!-- injection, mybatis는 conn 열고 닫고, datasource(CP)에 의존 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
+    <!-- interface : mybatis -->
     <mybatis-spring:scan base-package="org.zerock.mapper" />
 
+    <!-- interface : bean 등록 -->
     <context:component-scan base-package="org.zerock.sample"/>
 </beans>
