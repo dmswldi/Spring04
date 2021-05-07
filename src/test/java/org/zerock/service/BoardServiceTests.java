@@ -30,6 +30,7 @@ public class BoardServiceTests {
         BoardVO board = new BoardVO();
         board.setTitle("title~!");
         board.setContent("content~@");
+        board.setContent("안녕");
         board.setWriter("writer~~!");
 
         service.register(board);

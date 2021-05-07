@@ -13,6 +13,7 @@ import org.zerock.domain.SampleDTO;
 import org.zerock.domain.SampleDTOList;
 import org.zerock.domain.TodoDTO;
 
+import javax.servlet.ServletContainerInitializer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,5 +129,14 @@ public class SampleController {
             log.info("name: " + file.getOriginalFilename());
             log.info("size: " + file.getSize());
         });
+    }
+
+
+     @GetMapping("/test")
+    public void test() throws ClassNotFoundException {
+        //int[] array = new int[3];
+
+        //array[3] = 5;// 런타임 에러 발생
+        Class.forName("org.zerock");
     }
 }
