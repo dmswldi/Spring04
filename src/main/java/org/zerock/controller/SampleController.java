@@ -1,138 +1,86 @@
 package org.zerock.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.zerock.domain.SampleDTO;
-import org.zerock.domain.SampleDTOList;
-import org.zerock.domain.TodoDTO;
+import org.zerock.domain.SampleVO;
+import org.zerock.domain.Ticket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-@Controller
-@RequestMapping("/sample/*")
+@RestController // 메소드의 반환 문자열이 순수한 데이터가 됨
+@RequestMapping("/sample")
 @Log4j
 public class SampleController {
 
-    @RequestMapping(value = "", method = {RequestMethod.GET, RequestMethod.POST})
-    public void basic(){
-        log.info("basic...!");
+    @GetMapping(value = "/getText", produces = "text/plain; charset=UTF-8")
+    public String getText(){
+        log.info("MIME TYPE: " + MediaType.TEXT_PLAIN_VALUE);
+
+        return "안녕하세요";
     }
 
-    @GetMapping("/basicOnlyGet")
-    public void basicGet2(){
-        log.info("basic get only get...");
+    @GetMapping(value = "/getSample",
+            produces = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE})
+    public SampleVO getSample(){
+        return new SampleVO(112, "스타", "로드");
     }
 
-    @GetMapping("/ex01")
-    public String ex01(SampleDTO dto){
-        log.info("" + dto);
-        return "ex01";
+    @GetMapping(value = "/getSample2")
+    public SampleVO getSample2(){
+        return new SampleVO(113, "로켓", "라쿤");
     }
 
-    @GetMapping("/ex02")
-    public String ex02(@RequestParam("name") String name, @RequestParam("age") int age){
-        log.info("name: " + name);
-        log.info("age: " + age);
-        return "ex02";
-    }
-
-    @GetMapping("/ex02List")
-    public String ex02List(@RequestParam("ids") ArrayList<String> ids){
-        log.info("ids: " + ids);
-        return "ex02List";
-    }
-
-    @GetMapping("/ex02Array")
-    public String ex02Array(@RequestParam("ids") String[] ids){
-        log.info("array ids: " + Arrays.toString(ids));
-        return "ex02Array";// forwarding to: /views/ex02Array.jsp
-    }
-
-    @GetMapping("/ex02Bean")
-    public String ex02Bean(SampleDTOList list){
-        log.info("list dtos: " + list);
-        return "ex02Bean";
-    }
-
-    /* 6.3.4 @InitBinder*/
-    /*
-    @InitBinder
-    public void initBinder(WebDataBinder binder){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        binder.registerCustomEditor(java.util.Date.class, new CustomDateEditor(dateFormat, false));
-    }
-    */
-    @GetMapping("/ex03")
-    public String ex03(TodoDTO todo){
-        log.info("todo: " + todo);
-        return "ex03";
-    }
-
-    /* Model */
-    /* 기본 자료형은 @ModelAttribute를 선언하여 파라미터를 모델에 담아 jsp로 전달 */
-    @GetMapping("/ex04")
-    public String ex04(SampleDTO dto, @ModelAttribute("page") int page){
-        log.info("dto: " + dto);
-        log.info("page: " + page);
-        return "/sample/ex04";// forwarding to: /views/sample/ex04.jsp
-    }
-
-    @GetMapping("/ex05")// url 경로가 jsp 파일 이름, forwarding to: /views/sample/ex05.jsp
-    public void ex05(){
-        log.info("/ex05...");
-    }
-
-    /* VO나 DTO 리턴 -> JSON data, 몸체가 내용이 됨 */
-    @GetMapping("/ex06")
-    public @ResponseBody SampleDTO ex06(){
-        log.info("/ex06...");
-
-        SampleDTO dto = new SampleDTO();
-        dto.setAge(10);
-        dto.setName("홍길동");
-
-        return dto;
-    }
-
-    @GetMapping("/ex07")
-    public ResponseEntity<String> ex07(){
-        log.info("/ex07...");
-
-        String msg = "{\"name\": \"홍길동\"}";// {"name": "홍길동"}
-
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", "application/json;charset=UTF-8");
-
-        return new ResponseEntity<>(msg, header, HttpStatus.OK);
-    }
-
-    /* file upload */
-    @GetMapping("/exUpload")
-    public void exUpload(){
-        log.info("/exUpload...");
-    }
-
-    @PostMapping("/exUploadPost")
-    public void exUploadPost(ArrayList<MultipartFile> files){
-        files.forEach(file -> {
-            log.info("---------");
-            log.info("name: " + file.getOriginalFilename());
-            log.info("size: " + file.getSize());
-        });
+    @GetMapping(value = "/getList")
+    public List<SampleVO> getList(){
+        return IntStream.range(1, 10).mapToObj(i -> new SampleVO(i, i + " First", i + " Last"))
+                .collect(Collectors.toList());
     }
 
 
-     @GetMapping("/test")
-    public void test() throws ClassNotFoundException {
-        //int[] array = new int[3];
+    @GetMapping(value = "/getMap")
+    public Map<String, SampleVO> getMap(){
+        Map<String, SampleVO> map = new HashMap<>();
+        map.put("First", new SampleVO(111, "그루트", "주니어"));
 
-        //array[3] = 5;// 런타임 에러 발생
-        Class.forName("org.zerock");
+        return map;
+    }
+
+    @GetMapping(value = "/check", params = {"height", "weight"})
+    public ResponseEntity<SampleVO> check(Double height, Double weight){
+        // Double to String
+        SampleVO vo = new SampleVO(0, "" + height, "" + weight);
+
+        ResponseEntity<SampleVO> result = null;
+
+        if(height < 150){
+            result = ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(vo);
+        } else {
+            result = ResponseEntity.status(HttpStatus.OK).body(vo);
+            // ResponseEntity.status() -> return ResponseEntity.BodyBuilder
+        }
+
+        return result;
+    }
+
+    @GetMapping("/product/{cat}/{pid}")
+    public String[] getPath(@PathVariable("cat") String cat,
+                            @PathVariable Integer pid){
+        return new String[] {"category: " + cat, "productid: " + pid};
+    }
+
+    // GetMapping 시, org.springframework.http.converter.HttpMessageNotReadableException
+    // Required request body is missing
+    @PostMapping("/ticket")
+    public Ticket convert(@RequestBody Ticket ticket){// JSON to Java Obj
+        log.info("convert... ticket " + ticket);
+        return ticket;
     }
 }
