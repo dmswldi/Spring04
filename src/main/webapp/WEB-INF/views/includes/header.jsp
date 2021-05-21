@@ -30,6 +30,8 @@
     <!-- Custom styles for this page -->
     <link href="/resources/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" data-auto-replace-svg="nest"></script>
+
+    <link rel="shortcut icon" href="#">
 </head>
 
 <body id="page-top">
@@ -95,7 +97,7 @@
                     <h6 class="collapse-header">Custom Utilities:</h6>
                     <a class="collapse-item" href="/resources/utilities-color.html">Colors</a>
                     <a class="collapse-item" href="/resources/utilities-border.html">Borders</a>
-                    <a class="collapse-item" href="/resources/utilities-animation.html">Animations</a>
+<%--                    <a class="collapse-item" href="/resources/utilities-animation.html">Animations</a>--%>
                     <a class="collapse-item" href="/resources/utilities-other.html">Other</a>
                 </div>
             </div>

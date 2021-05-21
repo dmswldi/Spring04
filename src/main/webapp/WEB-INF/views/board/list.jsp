@@ -21,7 +21,7 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Board List Page
-                            <button id="regBtn" type="button" class="btn btn-xs border mx-auto">Register New Board</button>
+                            <button id="regBtn" type="button" class="btn btn-xs border float-right">Register New Board</button>
                         </h6>
                     </div>
                     <div class="card-body">
