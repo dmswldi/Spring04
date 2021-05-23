@@ -130,7 +130,7 @@
 
 <%@include file="../includes/footer.jsp"%>
 
-<script type="text/javascript" src="/resources/js/reply.js" />
+<script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -144,8 +144,6 @@
         operForm.find("#bno").remove();
         operForm.attr("action", "/board/list").submit();
       });
-
-
 
     });
 </script>
